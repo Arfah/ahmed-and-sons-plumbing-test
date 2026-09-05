@@ -8,6 +8,9 @@
 
   // Opt in to animated starting states only once JS is confirmed running.
   root.classList.add('js');
+  // Force a style pass now so the starting states are committed before any
+  // "loaded" class lands. Without this a cached hero image skips the sequence.
+  void root.offsetWidth;
 
   /* ---------------------------------------------------------------------
      Navigation: scrolled state, current-section highlight, mobile menu
@@ -73,9 +76,15 @@
      --------------------------------------------------------------------- */
   if (hero) {
     var heroImg = hero.querySelector('.hero__media img');
+    var heroStarted = false;
     var startHero = function () {
-      // Next frame so the starting states have been painted first.
-      requestAnimationFrame(function () { hero.classList.add('is-loaded'); });
+      if (heroStarted) return;
+      heroStarted = true;
+      // A short timer, then a frame: guarantees the starting states have been
+      // rendered at least once before the change, even on a first paint.
+      setTimeout(function () {
+        requestAnimationFrame(function () { hero.classList.add('is-loaded'); });
+      }, 120);
     };
     if (reduceMotion) {
       hero.classList.add('is-loaded');

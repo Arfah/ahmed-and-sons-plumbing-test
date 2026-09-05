@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ahmed-and-sons-plumbing-test.netlify.app/sitemap.xml
